@@ -45,4 +45,4 @@ for file_path in csv_files:
     title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
 
     with st.expander(title):
-        st.dataframe(df_new, round(2))
+        st.dataframe(df_new.round(2))
