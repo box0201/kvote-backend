@@ -6,21 +6,19 @@ import os
 from glob import glob
 USERS = st.secrets["users"]  # Uzimamo korisnike iz secrets
 
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
 if not st.session_state.authenticated:
     st.title("🔐 Login")
     username = st.text_input("Korisničko ime")
     password = st.text_input("Lozinka", type="password")
-    if st.button("Prijavi se"):
+    login_clicked = st.button("Prijavi se")
+
+    if login_clicked:
         if username in USERS and USERS[username] == password:
             st.session_state.authenticated = True
             st.experimental_rerun()
         else:
             st.error("❌ Pogrešno korisničko ime ili lozinka")
     st.stop()
-
 
 
 st.set_page_config(page_title="Kvote", layout="wide")
