@@ -111,7 +111,7 @@ with st.sidebar:
               kvote.append(f)
           except:
               pass
-      st.write("Kvote bez marigne:", kvote)
+      st.markdown("Kvote bez marigne:", kvote)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
