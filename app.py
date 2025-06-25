@@ -16,42 +16,42 @@ csv_files = glob(os.path.join(folder_path, "*.csv"))
 if 'selected_odds' not in st.session_state:
     st.session_state['selected_odds'] = []
 
-def prikazi_utakmicu(df, procenat):
-    # Prikaz utakmice i interaktivni izbor kvota
+def prikazi_utakmicu(df, procenat, prefix):
     domaci = df.iloc[0]['domaci']
     gosti = df.iloc[0]['gosti']
     vreme = df.iloc[0]['vreme'] + timedelta(hours=1)
     
     st.write(f"⚽ **{domaci} vs {gosti}**  —  🕒 {vreme}  —  {procenat}%")
 
-    # Pretpostavimo da su kvote u kolonama posle 'gosti', npr: ['1', 'X', '2', 'GG', 'NG', ...]
     kvote_df = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
     
-    # Napravi checkbox za svaku kvotu po koloni
     for col in kvote_df.columns:
         kvota = kvote_df.loc[0, col]
-        key = f"{domaci}_{gosti}_{col}"
-        # Checkbox za izbor kvote
+        # prefix je string sa jedinstvenim ID-jem, npr. file_name bez .csv
+        key = f"{prefix}_{domaci}_{gosti}_{col}"
+        key = key.replace(" ", "_")  # zamena razmaka sa _
+        
         izabrano = st.checkbox(f"{col}: {kvota}", key=key)
         
         if izabrano:
-            # Dodaj u globalni izbor kvota ako nije već tu
             if (domaci, gosti, col, kvota) not in st.session_state['selected_odds']:
                 st.session_state['selected_odds'].append((domaci, gosti, col, kvota))
         else:
-            # Ako checkbox nije štikliran, ukloni iz izbora ako postoji
             if (domaci, gosti, col, kvota) in st.session_state['selected_odds']:
                 st.session_state['selected_odds'].remove((domaci, gosti, col, kvota))
 
+
 for file_path in csv_files:
     file_name = os.path.basename(file_path)  
-    match = re.search(r'_(\d+(?:\.\d+)?)\.csv$', file_name)
+    prefix = os.path.splitext(file_name)[0]  # ime fajla bez ekstenzije
+    match = re.search(r'_(\d+(?:\.\d+)?)$', prefix)
     procenat = float(match.group(1)) if match else None
     df = pd.read_csv(file_path)
     df['vreme'] = pd.to_datetime(df['vreme']) + timedelta(hours=1)
 
     with st.expander(f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme'] + timedelta(hours=1)}  —  {procenat}%"):
-        prikazi_utakmicu(df, procenat)
+        prikazi_utakmicu(df, procenat, prefix)
+
 
 st.write("---")
 st.header("🧮 Arbitražni kalkulator")
@@ -80,5 +80,4 @@ if 2 <= len(st.session_state['selected_odds']) <= 3:
             st.warning("Kalkulator za 2 kvote još nije implementiran.")
 else:
     st.info("Izaberi tačno 2 ili 3 kvote za arbitražni kalkulator.")
-
 
