@@ -60,7 +60,7 @@ if 1:
     
     k1 = st.sidebar.text_input("", key="k1")
     k2 = st.sidebar.text_input("", key="k2")
-    kx = st.sidebar.text_input("", key="kx")
+    kx = st.sidebar.text_input("Ostavi prazno ako nema treće", key="kx")
     ulog_str = st.sidebar.text_input("Ukupni ulog (€)", key="ulog")
     
     def safe_float(x):
@@ -83,10 +83,7 @@ if 1:
             ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
             st.sidebar.markdown(f"**Ulozi po ishodima:**\n- Ishod 1: {ulozi[0]} €\n- Ishod 2: {ulozi[1]} €")
             st.sidebar.markdown(f"**Očekivani profit:** {profit} €")
-    else:
-        st.sidebar.info("Unesite ispravne kvote (najmanje ishod 1 i ishod 2) i ulog > 0.")
 
-# Prikaz utakmica (tvoj postojeći kod)
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
 
