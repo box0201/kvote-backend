@@ -3,14 +3,13 @@ import pandas as pd
 import re
 import os
 from glob import glob
-from func import highlight_max_except_id
+from func import highlight_max_except_id, kelly_criterion, margin
 from datetime import timedelta
 
+
 with st.sidebar:
-    st.title("⚙️ Podešavanja")
-    tip_opklade = st.selectbox("Izaberi tip:", ["1X2", "GG/NG", "Under/Over"])
-    minimalna_kvota = st.slider("Minimalna kvota", 1.0, 5.0, 1.5)
-    dugme = st.button("Primeni")
+    st.title("📈 KELLY")
+    
 
 USERS = st.secrets["valid_users"]
 
