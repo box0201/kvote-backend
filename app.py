@@ -89,12 +89,12 @@ div[data-testid="stTextInput"] > div > div > input {
 
 with st.sidebar:
     st.title("📈 KELLY")
-    k1 = st.text_input("Kladionica kvota 1", "")
-    k2 = st.text_input("Kladionica kvota 2", "")
-    k3 = st.text_input("Kladionica kvota 3 (opciono)", "")
-    r1 = st.text_input("Realna kvota 1", "")
-    r2 = st.text_input("Realna kvota 2", "")
-    r3 = st.text_input("Realna kvota 3 (opciono)", "")
+    k1 = st.text_input("Kladionica kvota 1", "",  label_visibility="collapsed")
+    k2 = st.text_input("Kladionica kvota 2", "",  label_visibility="collapsed")
+    k3 = st.text_input("(opciono)", "")
+    r1 = st.text_input("Realna kvota 1", "",  label_visibility="collapsed")
+    r2 = st.text_input("Realna kvota 2", "",  label_visibility="collapsed")
+    r3 = st.text_input("(opciono)", "")
     kladionica_kvote = []
     realne_kvote = []
     def try_parse_float(x):
