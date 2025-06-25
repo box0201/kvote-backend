@@ -6,7 +6,7 @@ from glob import glob
 from func import highlight_max_except_id, kelly_criterion, margina
 from datetime import timedelta
 
-s
+
 with st.sidebar:
     st.title("📈 KELLY")
     
