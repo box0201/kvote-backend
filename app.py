@@ -12,8 +12,6 @@ st.title("  📊 ARB UTAKMICE  ")
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
 
-import streamlit as st
-
 
 for file_path in csv_files:
     file_name = os.path.basename(file_path)  
