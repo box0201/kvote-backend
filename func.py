@@ -5,7 +5,7 @@ def highlight_max_except_id(df):
         is_max = s == s.max()
         return ['background-color: lightgreen' if v else '' for v in is_max]
 
-    return df_rounded.style.apply(
+    return df.style.apply(
         lambda col: highlight_max(col) if col.name != 'ID' else ['' for _ in col],
         axis=0
     )
