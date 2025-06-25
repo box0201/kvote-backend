@@ -16,7 +16,7 @@ for file_path in csv_files:
     procenat = float(match.group(1)) if match else None
     df = pd.read_csv(file_path)
     df_new = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
-    title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}"
+    title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
 
     with st.expander(title):
         st.dataframe(df_new)
