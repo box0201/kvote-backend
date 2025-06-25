@@ -1,11 +1,7 @@
 import pandas as pd
 
 def highlight_max_except_id(df):
-    df_rounded = df.copy()
-    for col in df_rounded.columns:
-        if col != 'ID' and pd.api.types.is_numeric_dtype(df_rounded[col]):
-            df_rounded[col] = df_rounded[col].round(2)
-    
+
     def highlight_max(s):
         is_max = s == s.max()
         return ['background-color: lightgreen' if v else '' for v in is_max]
