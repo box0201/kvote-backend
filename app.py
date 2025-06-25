@@ -55,9 +55,7 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("📊 ARB UTAKMICE")
 
-show_calc = st.sidebar.checkbox("Prikaži arbitražni kalkulator", value=True)
-
-if show_calc:
+if 1:
     st.sidebar.markdown("## Arbitražni kalkulator")
     st.sidebar.markdown("Unesi kvote i ulog. Ako treća kvota nije unesena, računa se kao 2-way.")
     
