@@ -12,8 +12,8 @@ csv_files = glob(os.path.join(folder_path, "*.csv"))
 
 for file_path in csv_files:
     file_name = os.path.basename(file_path)  # npr. 'utakmica_123_47.csv'
-    match = re.search(r'_(\d+)\.csv$', file_name)
-    procenat = match.group(1) if match else "?" 
+    match = re.search(r'_(\d+(?:\.\d+)?)\.csv$', file_name)
+    procenat = float(match.group(1)) if match else None
     df = pd.read_csv(file_path)
     df_new = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
     title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}"
