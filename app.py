@@ -6,7 +6,6 @@ from glob import glob
 from func import highlight_max_except_id
 from datetime import timedelta
 
-# Arbitražni kalkulatori
 def arbitrazni_kalkulator_2(kvote, ulog):
     k1, k2 = kvote
     ulog_1 = ulog / (1 + k1/k2)
@@ -29,13 +28,6 @@ st.title("📊 ARB UTAKMICE")
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
 
-# Kontrola za prikaz sidebar kalkulatora
-if "show_calculator" not in st.session_state:
-    st.session_state["show_calculator"] = False
-
-if st.button("🧮 Prikaži / sakrij arbitražni kalkulator"):
-    st.session_state["show_calculator"] = not st.session_state["show_calculator"]
-
 # Prikaz utakmica
 for file_path in csv_files:
     file_name = os.path.basename(file_path)  
@@ -49,37 +41,101 @@ for file_path in csv_files:
     with st.expander(title):
         st.dataframe(df_new)
 
-# Sidebar arbitražni kalkulator
-if st.session_state["show_calculator"]:
-    with st.sidebar:
-        st.header("⚖️ Arbitražni kalkulator")
+# CSS za desni "sidebar" panel sa strelicom
+st.markdown(
+    """
+    <style>
+    /* Container za arbitrazni kalkulator */
+    #right_panel {
+        position: fixed;
+        top: 100px;
+        right: 0;
+        width: 320px;
+        max-height: 80vh;
+        background-color: #f0f2f6;
+        border-left: 1px solid #ccc;
+        padding: 10px;
+        box-shadow: -3px 0 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        transform: translateX(0);
+        z-index: 9999;
+    }
+    /* Kad je zatvoren */
+    #right_panel.collapsed {
+        transform: translateX(300px);
+    }
+    /* Strelica za otvaranje/zatvaranje */
+    #toggle_button {
+        position: fixed;
+        top: 150px;
+        right: 320px;
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px 0 0 4px;
+        cursor: pointer;
+        z-index: 10000;
+        user-select: none;
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
 
-        mode = st.radio("Izaberi tip kalkulatora:", ("2-way (dva ishoda)", "3-way (tri ishoda)"))
+# Dodaj div za panel i dugme
+st.markdown("""
+<div id="right_panel">
+    <h3>⚖️ Arbitražni kalkulator</h3>
+    <div>
+        <label>Izaberi tip kalkulatora:</label><br>
+        <input type="radio" id="two_way" name="arb_mode" value="2-way" checked> 2-way (dva ishoda)<br>
+        <input type="radio" id="three_way" name="arb_mode" value="3-way"> 3-way (tri ishoda)
+    </div>
+    <br>
+    <div id="inputs_2way">
+        Kvota 1: <input type="number" id="k1" min="1.01" value="2.0" step="0.01"><br>
+        Kvota 2: <input type="number" id="k2" min="1.01" value="2.0" step="0.01"><br>
+        Ukupan ulog (€): <input type="number" id="ulog" min="1" value="100" step="1"><br>
+        <button onclick="calculate2()">Izračunaj 2-way</button>
+    </div>
+    <div id="inputs_3way" style="display:none;">
+        Kvota 1: <input type="number" id="k1_3" min="1.01" value="2.0" step="0.01"><br>
+        Kvota X: <input type="number" id="kx" min="1.01" value="3.0" step="0.01"><br>
+        Kvota 2: <input type="number" id="k2_3" min="1.01" value="2.0" step="0.01"><br>
+        Ukupan ulog (€): <input type="number" id="ulog_3" min="1" value="100" step="1"><br>
+        <button onclick="calculate3()">Izračunaj 3-way</button>
+    </div>
+    <br>
+    <div id="result"></div>
+</div>
+<div id="toggle_button">&#9664;</div>
 
-        if mode == "2-way (dva ishoda)":
-            k1 = st.number_input("Kvota 1", min_value=1.01, value=2.0, step=0.01, key="k1_arb")
-            k2 = st.number_input("Kvota 2", min_value=1.01, value=2.0, step=0.01, key="k2_arb")
-            ulog = st.number_input("Ukupan ulog (€)", min_value=1, value=100, step=1, key="ulog_arb")
+<script>
+const panel = document.getElementById('right_panel');
+const toggle = document.getElementById('toggle_button');
+toggle.onclick = () => {
+    if(panel.classList.contains('collapsed')){
+        panel.classList.remove('collapsed');
+        toggle.innerHTML = '&#9664;';  // strelica levo
+    } else {
+        panel.classList.add('collapsed');
+        toggle.innerHTML = '&#9654;';  // strelica desno
+    }
+}
 
-            if st.button("Izračunaj 2-way arbitražu"):
-                kvote = (k1, k2)
-                uloge, profit = arbitrazni_kalkulator_2(kvote, ulog)
-                st.success(f"Profit: {profit} €")
-                st.write(f"Ulog na 1: **{uloge[0]} €**")
-                st.write(f"Ulog na 2: **{uloge[1]} €**")
+document.getElementById('two_way').addEventListener('change', () => {
+    document.getElementById('inputs_2way').style.display = 'block';
+    document.getElementById('inputs_3way').style.display = 'none';
+});
+document.getElementById('three_way').addEventListener('change', () => {
+    document.getElementById('inputs_2way').style.display = 'none';
+    document.getElementById('inputs_3way').style.display = 'block';
+});
 
-        else:
-            k1 = st.number_input("Kvota 1", min_value=1.01, value=2.0, step=0.01, key="k1_arb_3")
-            kx = st.number_input("Kvota X", min_value=1.01, value=3.0, step=0.01, key="kx_arb_3")
-            k2 = st.number_input("Kvota 2", min_value=1.01, value=2.0, step=0.01, key="k2_arb_3")
-            ulog = st.number_input("Ukupan ulog (€)", min_value=1, value=100, step=1, key="ulog_arb_3")
+// Kalkulator se NE MOŽE direktno raditi u Streamlit iz JS, ovo je samo primer UI
+// Za pravi izračun koristi Streamlit inpute i Python backend (da javljam ako želiš kako)
 
-            if st.button("Izračunaj 3-way arbitražu"):
-                kvote = (k1, kx, k2)
-                uloge, profit = arbitrazni_kalkulator_3(kvote, ulog)
-                st.success(f"Profit: {profit} €")
-                st.write(f"Ulog na 1: **{uloge[0]} €**")
-                st.write(f"Ulog na X: **{uloge[1]} €**")
-                st.write(f"Ulog na 2: **{uloge[2]} €**")
+</script>
+""", unsafe_allow_html=True)
 
 
