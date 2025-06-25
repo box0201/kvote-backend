@@ -3,6 +3,7 @@ import pandas as pd
 import re
 import os
 from glob import glob
+from func import highlight_max_except_id
 
 USERS = st.secrets["valid_users"]
 
@@ -38,6 +39,7 @@ for file_path in csv_files:
     procenat = float(match.group(1)) if match else None
     df = pd.read_csv(file_path)
     df_new = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
+    df_new = highlight_max_except_id(df_new)
     title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
 
     with st.expander(title):
