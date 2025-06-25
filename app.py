@@ -76,10 +76,11 @@ for file_path in csv_files:
         with st.expander("Arbitražni kalkulator", expanded=False):
             cols = st.columns(3) 
 
-            k1 = cols[0].text_input("Kvota za ishod 1", key=f"k1_{file_name}")
-            kx = cols[1].text_input("Kvota za ishod X (ostavi prazno ako nema)", key=f"kx_{file_name}")
-            k2 = cols[2].text_input("Kvota za ishod 2", key=f"k2_{file_name}")
-            ulog_str = st.text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
+            k1 = cols[0].text_input("", key=f"k1_{file_name}")
+            k2 = cols[2].text_input("", key=f"k2_{file_name}")
+            kx = cols[1].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
+
+            ulog_str = st.text_input("Ukupni ulog", key=f"ulog_{file_name}")
             def safe_float(x):
                 try:
                     return float(x)
@@ -100,5 +101,4 @@ for file_path in csv_files:
                     ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
                     st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, 2: {ulozi[1]} €")
                     st.markdown(f"**Profit:** {profit} €")
-            else:
-                st.info("Unesite validne kvote i ulog.")
+    
