@@ -3,61 +3,13 @@ import pandas as pd
 import re
 import os
 from glob import glob
-from func import highlight_max_except_id, kelly_criterion, margina
+from func import highlight_max_except_id, kelly_criterion, margina, arbitrazni_kalkulator_2, arbitrazni_kalkulator_3
 from datetime import timedelta
-
-
 
     
 
 USERS = st.secrets["valid_users"]
 
-
-def arbitrazni_kalkulator_2(kvote, ulog, tolerancija=1000):
-    kvota_1, kvota_2 = kvote
-    najmanja_razlika = float('inf') 
-    najbolje_uloge = None 
-    for i in range(int(ulog - tolerancija), int(ulog), 100):
-        ulog_1 = (i / kvota_1) / ((1 / kvota_1) + (1 / kvota_2))
-        ulog_2 = i - ulog_1
-        ulog_1 = round(ulog_1 / 100) * 100  
-        ulog_2 = round(ulog_2 / 100) * 100  
-        profit_1 = ulog_1 * kvota_1 - i
-        profit_2 = ulog_2 * kvota_2 - i
-        razlika = abs(profit_1 - profit_2)
-        if razlika < najmanja_razlika:
-            najmanja_razlika = razlika
-            najbolje_uloge = (ulog_1, ulog_2)
-    i = sum(najbolje_uloge)
-    profit_1 = najbolje_uloge[0] * kvota_1 - i
-    profit_2 = najbolje_uloge[1] * kvota_2 - i
-    profit = (profit_1 + profit_2) / 2 
-    return najbolje_uloge, round(profit, 2)
-
-def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
-    kvota_1, kvota_2, kvota_3 = kvote
-    najmanja_razlika = float('inf')
-    najbolje_uloge = None
-    for i in range(int(ulog - tolerancija), int(ulog), 100):
-        ulog_1 = (i / kvota_1) / ((1 / kvota_1) + (1 / kvota_2) + (1 / kvota_3))
-        ulog_2 = (i / kvota_2) / ((1 / kvota_1) + (1 / kvota_2) + (1 / kvota_3))
-        ulog_3 = i - ulog_1 - ulog_2
-        ulog_1 = round(ulog_1 / 100) * 100
-        ulog_2 = round(ulog_2 / 100) * 100
-        ulog_3 = round(ulog_3 / 100) * 100
-        profit_1 = ulog_1 * kvota_1 - i
-        profit_2 = ulog_2 * kvota_2 - i
-        profit_3 = ulog_3 * kvota_3 - i
-        razlika = abs(profit_1 - profit_2) + abs(profit_1 - profit_3) + abs(profit_2 - profit_3)
-        if razlika < najmanja_razlika:
-            najmanja_razlika = razlika
-            najbolje_uloge = (ulog_1, ulog_2, ulog_3)
-    i = sum(najbolje_uloge)
-    profit_1 = najbolje_uloge[0] * kvota_1 - i
-    profit_2 = najbolje_uloge[1] * kvota_2 - i
-    profit_3 = najbolje_uloge[2] * kvota_3 - i
-    profit = (profit_1 + profit_2 + profit_3) / 3
-    return najbolje_uloge, round(profit, 2)
 
 def safe_float(x):
   try:
