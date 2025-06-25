@@ -117,9 +117,9 @@ for file_path in csv_files:
         with st.expander("Arbitražni kalkulator", expanded=False):
             cols = st.columns(3) 
 
-        k1 = cols[0].text_input("Kvota 1", key=f"k1_{file_name}", label_visibility="collapsed")
-        k2 = cols[1].text_input("Kvota 2", key=f"k2_{file_name}", label_visibility="collapsed")
-        kx = cols[2].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
+            k1 = cols[0].text_input("Kvota 1", key=f"k1_{file_name}", label_visibility="collapsed")
+            k2 = cols[1].text_input("Kvota 2", key=f"k2_{file_name}", label_visibility="collapsed")
+            kx = cols[2].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
 
             ulog_str = st.text_input("Ukupni ulog", key=f"ulog_{file_name}")
             def safe_float(x):
