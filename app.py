@@ -85,37 +85,48 @@ for file_path in csv_files:
     df['vreme'] = pd.to_datetime(df['vreme']) + timedelta(hours=1)
     df_new = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
     df_new = highlight_max_except_id(df_new)  
+
     title = f" 💸 {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']} — 🕒 {df.iloc[0]['vreme']} — {procenat}%"
 
     with st.expander(title):
         st.dataframe(df_new)
 
-        with st.expander("Arbitražni kalkulator", expanded=False):
-            cols = st.columns(3) 
+        # Dinamički pronađi kolone sa kvotama
+        meta_cols = ['vreme', 'domaci', 'gosti', 'id']
+        kvote_cols = [col for col in df_new.columns if col not in meta_cols]
 
-            k1 = cols[0].text_input("", key=f"k1_{file_name}")
-            k2 = cols[1].text_input("", key=f"k2_{file_name}")
-            kx = cols[2].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
+        # Podrazumevane vrednosti iz prvog reda
+        default_kvote_values = [str(df_new[col].iloc[0]) for col in kvote_cols]
 
-            ulog_str = st.text_input("Ukupni ulog", key=f"ulog_{file_name}")
-            def safe_float(x):
-                try:
-                    return float(x)
-                except:
-                    return None
+        cols = st.columns(len(kvote_cols))
+        k_inputs = []
+        for i, col in enumerate(kvote_cols):
+            k = cols[i].text_input(f"{col}", value=default_kvote_values[i], key=f"{col}_{file_name}")
+            k_inputs.append(k)
 
-            k1_f = safe_float(k1)
-            kx_f = safe_float(kx)
-            k2_f = safe_float(k2)
-            ulog = safe_float(ulog_str)
+        ulog_str = st.text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
 
-            if k1_f and k2_f and ulog and ulog > 0:
-                if kx_f:
-                    ulozi, profit = arbitrazni_kalkulator_3([k1_f, k2_f, kx_f], ulog)
-                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, X: {ulozi[1]} €, 2: {ulozi[2]} €")
-                    st.markdown(f"**Profit:** {profit} €")
-                else:
-                    ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
-                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, 2: {ulozi[1]} €")
-                    st.markdown(f"**Profit:** {profit} €")
-    
+        def safe_float(x):
+            try:
+                return float(x)
+            except:
+                return None
+
+        kvote_float = [safe_float(k) for k in k_inputs]
+        ulog = safe_float(ulog_str)
+
+        if ulog and ulog > 0 and all(kvote_float) and len(kvote_float) in [2, 3]:
+            if len(kvote_float) == 2:
+                ulozi, profit = arbitrazni_kalkulator_2(kvote_float, ulog)
+                st.markdown(f"**Ulozi:** {kvote_cols[0]}: {ulozi[0]} €, {kvote_cols[1]}: {ulozi[1]} €")
+                st.markdown(f"**Profit:** {profit} €")
+            else:
+                ulozi, profit = arbitrazni_kalkulator_3(kvote_float, ulog)
+                st.markdown(
+                    f"**Ulozi:** {kvote_cols[0]}: {ulozi[0]} €, "
+                    f"{kvote_cols[1]}: {ulozi[1]} €, "
+                    f"{kvote_cols[2]}: {ulozi[2]} €"
+                )
+                st.markdown(f"**Profit:** {profit} €")
+        else:
+            st.info("Unesite validne kvote (2 ili 3) i ulog > 0.")
