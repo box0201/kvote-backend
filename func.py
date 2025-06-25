@@ -1,4 +1,4 @@
-import pandas as p 
+import pandas as pd
 
 def highlight_max_except_id(df):
     df_rounded = df.copy()
