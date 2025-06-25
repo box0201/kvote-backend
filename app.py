@@ -109,6 +109,7 @@ with st.sidebar:
               kvote.append(f)
           except:
               pass
+      kvote = margina(kvote)
       st.markdown(f"**Kvote bez margine:** {kvote}")
 
 folder_path = "csv"  
