@@ -108,9 +108,9 @@ for file_path in csv_files:
             if k1_f and k2_f and ulog and ulog > 0:
                 if kx_f:
                     ulozi, profit = arbitrazni_kalkulator_3([k1_f, kx_f, k2_f], ulog)
-                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, X: {ulozi[1]} €, 2: {ulozi[2]} €")
-                    st.markdown(f"**Profit:** {profit} €")
+                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} RSD, X: {ulozi[1]} RSD, 2: {ulozi[2]} RSD")
+                    st.markdown(f"**Profit:** {profit} RSD")
                 else:
                     ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
-                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, 2: {ulozi[1]} €")
-                    st.markdown(f"**Profit:** {profit} €")
+                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} RSD, 2: {ulozi[1]} RSD")
+                    st.markdown(f"**Profit:** {profit} RSD")
