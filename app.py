@@ -102,8 +102,8 @@ with st.sidebar:
 
     if st.button("Izračunaj"):
         kvote = []
-        kvote.append(k1, k2, k3)
-        st.markdown(kvote)
+        kvote.append(float(k1), float(k2), float(k3))
+        st.write(kvote)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
