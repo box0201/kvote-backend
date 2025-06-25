@@ -6,21 +6,61 @@ from glob import glob
 from func import highlight_max_except_id
 from datetime import timedelta
 
-def arbitrazni_kalkulator_2(kvote, ulog):
-    k1, k2 = kvote
-    ulog_1 = ulog / (1 + k1/k2)
-    ulog_2 = ulog - ulog_1
-    profit = ulog_1 * k1 - ulog
-    return (round(ulog_1, 2), round(ulog_2, 2)), round(profit, 2)
+def arbitrazni_kalkulator_2(kvote, ulog, tolerancija=1000):
+    kvota_1, kvota_2 = kvote
 
-def arbitrazni_kalkulator_3(kvote, ulog):
-    k1, kx, k2 = kvote
-    inv_sum = 1/k1 + 1/kx + 1/k2
-    ulog_1 = ulog / (k1 * inv_sum)
-    ulog_x = ulog / (kx * inv_sum)
-    ulog_2 = ulog / (k2 * inv_sum)
-    profit = ulog_1 * k1 - ulog
-    return (round(ulog_1,2), round(ulog_x,2), round(ulog_2,2)), round(profit, 2)
+    najmanja_razlika = float('inf') 
+    najbolje_uloge = None 
+
+    for i in range(ulog - tolerancija, ulog, 100):
+        ulog_1 = (i / kvota_1) / ((1 / kvota_1) + (1 / kvota_2))
+        ulog_2 = i - ulog_1
+        ulog_1 = round(ulog_1 / 100) * 100  
+        ulog_2 = round(ulog_2 / 100) * 100  
+        profit_1 = ulog_1 * kvota_1 - i
+        profit_2 = ulog_2 * kvota_2 - i
+        razlika = abs(profit_1 - profit_2)
+        if razlika < najmanja_razlika:
+            najmanja_razlika = razlika
+            najbolje_uloge = (ulog_1, ulog_2)
+            
+    i = sum(najbolje_uloge)
+    profit_1 = najbolje_uloge[0] * kvota_1 - i
+    profit_2 = najbolje_uloge[1] * kvota_2 - i
+    profit = (profit_1 + profit_2) / 2 
+    return najbolje_uloge
+
+def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
+    kvota_1, kvota_2, kvota_3 = kvote
+    najmanja_razlika = float('inf')
+    najbolje_uloge = None
+
+    for i in range(ulog - tolerancija, ulog, 100):
+        ulog_1 = (i / kvota_1) / ((1 / kvota_1) + (1 / kvota_2) + (1 / kvota_3))
+        ulog_2 = (i / kvota_2) / ((1 / kvota_1) + (1 / kvota_2) + (1 / kvota_3))
+        ulog_3 = i - ulog_1 - ulog_2
+
+        ulog_1 = round(ulog_1 / 100) * 100
+        ulog_2 = round(ulog_2 / 100) * 100
+        ulog_3 = round(ulog_3 / 100) * 100
+
+        profit_1 = ulog_1 * kvota_1 - i
+        profit_2 = ulog_2 * kvota_2 - i
+        profit_3 = ulog_3 * kvota_3 - i
+
+        razlika = abs(profit_1 - profit_2) + abs(profit_1 - profit_3) + abs(profit_2 - profit_3)
+
+        if razlika < najmanja_razlika:
+            najmanja_razlika = razlika
+            najbolje_uloge = (ulog_1, ulog_2, ulog_3)
+
+    i = sum(najbolje_uloge)
+    profit_1 = najbolje_uloge[0] * kvota_1 - i
+    profit_2 = najbolje_uloge[1] * kvota_2 - i
+    profit_3 = najbolje_uloge[2] * kvota_3 - i
+    profit = (profit_1 + profit_2 + profit_3) / 3
+
+    return najbolje_uloge
 
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("📊 ARB UTAKMICE")
