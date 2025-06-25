@@ -57,11 +57,10 @@ st.title("📊 ARB UTAKMICE")
 
 if 1:
     st.sidebar.markdown("## Arbitražni kalkulator")
-    st.sidebar.markdown("Unesi kvote i ulog. Ako treća kvota nije unesena, računa se kao 2-way.")
     
-    k1 = st.sidebar.text_input("Kvote za ishod 1", key="k1")
-    kx = st.sidebar.text_input("Kvote za ishod X (ostavi prazno za 2-way)", key="kx")
-    k2 = st.sidebar.text_input("Kvote za ishod 2", key="k2")
+    k1 = st.sidebar.text_input("", key="k1")
+    kx = st.sidebar.text_input("", key="kx")
+    k2 = st.sidebar.text_input("", key="k2")
     ulog_str = st.sidebar.text_input("Ukupni ulog (€)", key="ulog")
     
     def safe_float(x):
