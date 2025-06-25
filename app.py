@@ -24,3 +24,30 @@ for file_path in csv_files:
     with st.expander(title):
       st.dataframe(df_new)  
 
+# Prikaz arbitražnog kalkulatora u sidebaru na klik
+if "show_calculator" not in st.session_state:
+    st.session_state["show_calculator"] = False
+
+if st.button("🧮 Prikaži / sakrij arbitražni kalkulator"):
+    st.session_state["show_calculator"] = not st.session_state["show_calculator"]
+
+if st.session_state["show_calculator"]:
+    with st.sidebar:
+        st.header("⚖️ Arbitražni kalkulator (3 ishoda)")
+
+        k1 = st.number_input("Kvota 1", min_value=1.01, value=2.5, step=0.01, key="k1_arb")
+        kx = st.number_input("Kvota X", min_value=1.01, value=3.2, step=0.01, key="kx_arb")
+        k2 = st.number_input("Kvota 2", min_value=1.01, value=2.7, step=0.01, key="k2_arb")
+        ulog = st.number_input("Ukupan ulog", min_value=100, value=1000, step=100, key="ulog_arb")
+        tolerancija = st.number_input("Tolerancija (razlika)", min_value=0, value=1000, step=100, key="tol_arb")
+
+        if st.button("📊 Izračunaj arbitražu"):
+            kvote = (k1, kx, k2)
+            try:
+                uloge, profit, roi = arbitrazni_kalkulator_3(kvote, ulog, tolerancija)
+                st.success(f"✅ PROFIT: {profit:.2f} €  |  ROI: {roi:.2f}%")
+                st.write(f"Ulog 1: **{uloge[0]:.2f} €**")
+                st.write(f"Ulog X: **{uloge[1]:.2f} €**")
+                st.write(f"Ulog 2: **{uloge[2]:.2f} €**")
+            except Exception as e:
+                st.error(f"Greška: {e}")
