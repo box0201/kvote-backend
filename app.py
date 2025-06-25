@@ -106,24 +106,27 @@ with st.sidebar:
 
     if st.button("Izračunaj"):
         kladionica_kvote = []
-        realne_kvote = []
+        for val in [k1, k2, k3]:
+            f = try_parse_float(val.strip())
+            if f is not None:
+                kladionica_kvote.append(f)
 
-        for k, r in [(k1, r1), (k2, r2), (k3, r3)]:
-            k_float = try_parse_float(k.strip())
-            r_float = try_parse_float(r.strip())
-            if k_float is not None and r_float is not None:
-                kladionica_kvote.append(k_float)
-                realne_kvote.append(r_float)
-
-        if len(kladionica_kvote) >= 2 and len(kladionica_kvote) == len(realne_kvote):
+        if len(kladionica_kvote) >= 2:
             margine = margina(kladionica_kvote)
             if margine:
+                # Popuni session_state sa marginom kao stringovi za realne kvote
+                st.session_state.realne_kvote = [str(m) for m in margine] + [""]*(3 - len(margine))
+
                 st.write("**Margine (adjusted kvote):**", margine)
+
+                st.write("**Kelly ulog (%):**")
+                for i, (k_kv, r_kv) in enumerate(zip(kladionica_kvote, margine)):
+                    kelly = kelly_criterion(k_kv, r_kv)
+                    st.write(f"Ishod {i+1}: {kelly} %")
             else:
                 st.warning("Greška u izračunavanju margine.")
-
-
-
+        else:
+            st.info("Unesi barem 2 validne kvote kladionice.")
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
