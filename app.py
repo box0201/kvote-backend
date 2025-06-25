@@ -6,7 +6,7 @@ from glob import glob
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("📊 Pregled kvota")
 
-folder_path = "/content/kvote-backend/csv"  # Tvoj folder sa CSV fajlovima
+folder_path = "/csv"  # Tvoj folder sa CSV fajlovima
 csv_files = glob(os.path.join(folder_path, "*.csv"))
 
 for file in csv_files:
