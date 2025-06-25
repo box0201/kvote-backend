@@ -101,13 +101,14 @@ with st.sidebar:
             return None
 
     if st.button("Izračunaj"):
-        kvote = []
-        kvote.append(float(k1), float(k2))
-        try:
-          kvote.append(float(k3))
-        except:
-          pass
-        st.write(kvote)
+      kvote = []
+      for val in [k1, k2, k3]:
+          try:
+              f = float(val)
+              kvote.append(f)
+          except:
+              pass
+      st.write(kvote)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
