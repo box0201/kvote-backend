@@ -4,6 +4,7 @@ import re
 import os
 from glob import glob
 from func import highlight_max_except_id
+from datetime import timedelta
 
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("  📊 ARB UTAKMICE  ")
@@ -20,7 +21,7 @@ for file_path in csv_files:
     df_new = highlight_max_except_id(df_new)
 
     
-    title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
+    title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']+timedelta(hours=1)}  —  {procenat}%"
     with st.expander(title):
       st.dataframe(df_new)  
 
