@@ -3,81 +3,75 @@ import pandas as pd
 import re
 import os
 from glob import glob
-from func import highlight_max_except_id
 from datetime import timedelta
 
-st.set_page_config(page_title="Kvote", layout="wide")
-st.title("  📊 ARB UTAKMICE  ")
+if "selected_odds" not in st.session_state:
+    st.session_state["selected_odds"] = []  # Čuvaj tuple (kladionica, tip kvote, vrednost)
 
-folder_path = "csv"  
-csv_files = glob(os.path.join(folder_path, "*.csv"))
-
-# Globalni spisak odabranih kvota za kalkulator
-if 'selected_odds' not in st.session_state:
-    st.session_state['selected_odds'] = []
-
-def prikazi_utakmicu(df, procenat, prefix):
+def prikazi_utakmicu(df, prefix):
     domaci = df.iloc[0]['domaci']
     gosti = df.iloc[0]['gosti']
     vreme = df.iloc[0]['vreme'] + timedelta(hours=1)
-    
-    st.write(f"⚽ **{domaci} vs {gosti}**  —  🕒 {vreme}  —  {procenat}%")
+    st.write(f"⚽ **{domaci} vs {gosti}**  —  🕒 {vreme}")
 
-    kvote_df = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
-    
-    for col in kvote_df.columns:
-        kvota = kvote_df.loc[0, col]
-        # prefix je string sa jedinstvenim ID-jem, npr. file_name bez .csv
-        key = f"{prefix}_{domaci}_{gosti}_{col}"
-        key = key.replace(" ", "_")  # zamena razmaka sa _
-        
-        izabrano = st.checkbox(f"{col}: {kvota}", key=key)
-        
-        if izabrano:
-            if (domaci, gosti, col, kvota) not in st.session_state['selected_odds']:
-                st.session_state['selected_odds'].append((domaci, gosti, col, kvota))
-        else:
-            if (domaci, gosti, col, kvota) in st.session_state['selected_odds']:
-                st.session_state['selected_odds'].remove((domaci, gosti, col, kvota))
+    # Prikaži tabelu kvota sa checkbox-ovima po polju:
+    for i, row in df.iterrows():
+        kladionica = row['ID']
+        cols = df.columns.drop(['ID', 'vreme', 'domaci', 'gosti'])
+        cols_data = []
+        for col in cols:
+            kvota = row[col]
+            key = f"{prefix}_{kladionica}_{col}_{i}"
+            izabrano = st.checkbox(f"{kladionica} {col} ({kvota})", key=key, value=False)
+            if izabrano:
+                if (kladionica, col, kvota) not in st.session_state['selected_odds']:
+                    st.session_state['selected_odds'].append((kladionica, col, kvota))
+            else:
+                if (kladionica, col, kvota) in st.session_state['selected_odds']:
+                    st.session_state['selected_odds'].remove((kladionica, col, kvota))
 
+st.set_page_config(page_title="Kvote", layout="wide")
+st.title("📊 ARB UTAKMICE")
+
+folder_path = "csv"
+csv_files = glob(os.path.join(folder_path, "*.csv"))
 
 for file_path in csv_files:
-    file_name = os.path.basename(file_path)  
-    prefix = os.path.splitext(file_name)[0]  # ime fajla bez ekstenzije
-    match = re.search(r'_(\d+(?:\.\d+)?)$', prefix)
-    procenat = float(match.group(1)) if match else None
+    file_name = os.path.basename(file_path)
+    prefix = os.path.splitext(file_name)[0]
     df = pd.read_csv(file_path)
-    df['vreme'] = pd.to_datetime(df['vreme']) + timedelta(hours=1)
+    df['vreme'] = pd.to_datetime(df['vreme'])
+    with st.expander(f"{prefix} - {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}"):
+        prikazi_utakmicu(df, prefix)
 
-    with st.expander(f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme'] + timedelta(hours=1)}  —  {procenat}%"):
-        prikazi_utakmicu(df, procenat, prefix)
+# Sidebar sa arbitražnim kalkulatorom
+with st.sidebar:
+    st.header("🧮 Arbitražni kalkulator")
 
+    if len(st.session_state['selected_odds']) < 2:
+        st.info("Izaberi najmanje 2 kvote za kalkulaciju.")
+    else:
+        # Prikaz izabranih kvota
+        st.write("Izabrane kvote:")
+        for klad, tip, kv in st.session_state['selected_odds']:
+            st.write(f"{klad} - {tip}: {kv}")
 
-st.write("---")
-st.header("🧮 Arbitražni kalkulator")
+        # Unos uloga i tolerancije
+        ulog = st.number_input("Ukupan ulog", min_value=100, value=1000, step=100)
+        tolerancija = st.number_input("Tolerancija", min_value=0, value=1000, step=100)
 
-# Prikaži trenutno izabrane kvote
-st.write("Izabrane kvote (klikom u listi utakmica):")
-for item in st.session_state['selected_odds']:
-    st.write(f"{item[0]} vs {item[1]} — Tip: {item[2]} — Kvota: {item[3]}")
-
-# Ako je izabrano 2 ili 3 kvote, omogući izračunavanje
-if 2 <= len(st.session_state['selected_odds']) <= 3:
-    ulog = st.number_input("Ukupan ulog", min_value=100, value=1000, step=100)
-    tolerancija = st.number_input("Tolerancija (razlika)", min_value=0, value=1000, step=100)
-
-    if st.button("📊 Izračunaj arbitražu"):
-        kvote = tuple(od[3] for od in st.session_state['selected_odds'])
-        # pozovi arbitražni kalkulator za 2 ili 3 kvote
-        if len(kvote) == 3:
-            uloge, profit, roi = arbitrazni_kalkulator_3(kvote, ulog, tolerancija)
-            st.success(f"✅ PROFIT: {profit:.2f} €  |  ROI: {roi:.2f}%")
-            st.write(f"Ulog 1: **{uloge[0]:.2f} €**")
-            st.write(f"Ulog 2: **{uloge[1]:.2f} €**")
-            st.write(f"Ulog 3: **{uloge[2]:.2f} €**")
-        elif len(kvote) == 2:
-            # Ovde možeš implementirati funkciju za 2 kvote, npr. arbitrazni_kalkulator_2
-            st.warning("Kalkulator za 2 kvote još nije implementiran.")
-else:
-    st.info("Izaberi tačno 2 ili 3 kvote za arbitražni kalkulator.")
+        if st.button("Izračunaj arbitražu"):
+            # Ovde treba da pozoveš svoju funkciju arbitraznog kalkulatora,
+            # proslediš kvote kao tuple od float vrednosti
+            try:
+                kvote = tuple([kv for _, _, kv in st.session_state['selected_odds']])
+                # Pretpostavimo da imaš arbitrazni_kalkulator_3 za tri kvote
+                if len(kvote) == 3:
+                    uloge, profit, roi = arbitrazni_kalkulator_3(kvote, ulog, tolerancija)
+                    st.success(f"Profit: {profit} €, ROI: {roi}%")
+                    st.write(f"Ulogovi: {uloge}")
+                else:
+                    st.warning("Trenutno podržan samo kalkulator za 3 kvote.")
+            except Exception as e:
+                st.error(f"Greška u kalkulaciji: {e}")
 
