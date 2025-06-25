@@ -40,7 +40,7 @@ for file_path in csv_files:
     df = pd.read_csv(file_path)
     df_new = df.drop(columns=['vreme', 'domaci', 'gosti']).reset_index(drop=True)
     df_new = highlight_max_except_id(df_new)
-    df_new = df_new.round(2)
+
     title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
 
     with st.expander(title):
