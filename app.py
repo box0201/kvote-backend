@@ -122,12 +122,7 @@ with st.sidebar:
             else:
                 st.warning("Greška u izračunavanju margine.")
 
-            st.write("**Kelly ulog (%):**")
-            for i, (k_kv, r_kv) in enumerate(zip(kladionica_kvote, realne_kvote)):
-                kelly = kelly_criterion(k_kv, r_kv)
-                st.write(f"Ishod {i+1}: {kelly} %")
-        else:
-            st.info("Unesi barem 2 para validnih kvota u oba polja.")
+
 
 
 folder_path = "csv"  
