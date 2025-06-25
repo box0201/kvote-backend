@@ -5,7 +5,7 @@ import os
 from glob import glob
 
 st.set_page_config(page_title="Kvote", layout="wide")
-st.title("📊 Pregled kvota")
+st.title("  📊 ARB UTAKMICE  ")
 
 folder_path = "csv"  # Tvoj folder sa CSV fajlovima
 csv_files = glob(os.path.join(folder_path, "*.csv"))
