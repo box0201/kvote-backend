@@ -12,11 +12,6 @@ with st.sidebar:
     minimalna_kvota = st.slider("Minimalna kvota", 1.0, 5.0, 1.5)
     dugme = st.button("Primeni")
 
-st.title("📊 Glavni sadržaj")
-st.write(f"Izabrani tip: **{tip_opklade}**, minimalna kvota: **{minimalna_kvota}**")
-if dugme:
-    st.success("Filter primenjen ✅")
-    
 USERS = st.secrets["valid_users"]
 
 
