@@ -74,11 +74,12 @@ for file_path in csv_files:
         st.dataframe(df_new)
 
         with st.expander("Arbitražni kalkulator", expanded=False):
-            k1 = st.text_input("Kvota za ishod 1", key=f"k1_{file_name}")
-            kx = st.text_input("Kvota za ishod X (ostavi prazno ako nema)", key=f"kx_{file_name}")
-            k2 = st.text_input("Kvota za ishod 2", key=f"k2_{file_name}")
-            ulog_str = st.text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
+            cols = st.columns(4)  # napravi 4 kolone
 
+            k1 = cols[0].text_input("Kvota za ishod 1", key=f"k1_{file_name}")
+            kx = cols[1].text_input("Kvota za ishod X (ostavi prazno ako nema)", key=f"kx_{file_name}")
+            k2 = cols[2].text_input("Kvota za ishod 2", key=f"k2_{file_name}")
+            ulog_str = cols[3].text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
             def safe_float(x):
                 try:
                     return float(x)
