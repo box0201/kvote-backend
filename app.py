@@ -5,27 +5,6 @@ import os
 from glob import glob
 from func import highlight_max_except_id
 
-USERS = st.secrets["valid_users"]
-
-if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
-    st.session_state["username"] = ""
-
-if not st.session_state["authenticated"]:
-    st.title("🔐 Login - samo korisničko ime")
-
-    username = st.text_input("Unesi korisničko ime")
-
-    if st.button("Prijavi se"):
-        if username in USERS:
-            st.session_state["authenticated"] = True
-            st.session_state["username"] = username
-            st.success("Uspešno ste prijavljeni! Učitajte stranicu ponovo.")
-        else:
-            st.error("❌ Korisničko ime nije validno")
-
-    st.stop()
-    
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("  📊 ARB UTAKMICE  ")
 
