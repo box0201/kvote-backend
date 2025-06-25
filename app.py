@@ -76,7 +76,7 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
     return najbolje_uloge, round(profit, 2)
 
 st.set_page_config(page_title="Kvote", layout="wide")
-st.title(' 📊Arb utakmice')
+st.title('📊Arb utakmice📊')
 
 st.markdown("""
 <style>
