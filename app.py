@@ -7,8 +7,7 @@ from func import highlight_max_except_id, kelly_criterion, margina
 from datetime import timedelta
 
 
-with st.sidebar:
-    st.title("📈 KELLY")
+
     
 
 USERS = st.secrets["valid_users"]
@@ -60,6 +59,12 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
     profit = (profit_1 + profit_2 + profit_3) / 3
     return najbolje_uloge, round(profit, 2)
 
+def safe_float(x):
+  try:
+    return float(x)
+  except:
+    return None
+
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title('📊 Arb utakmice')
 
@@ -82,8 +87,47 @@ div[data-testid="stTextInput"] > div > div > input {
 </style>
 """, unsafe_allow_html=True)
 
+with st.sidebar:
+    st.title("📈 KELLY")
+    k1 = st.text_input("Kladionica kvota 1", "")
+    k2 = st.text_input("Kladionica kvota 2", "")
+    k3 = st.text_input("Kladionica kvota 3 (opciono)", "")
+    r1 = st.text_input("Realna kvota 1", "")
+    r2 = st.text_input("Realna kvota 2", "")
+    r3 = st.text_input("Realna kvota 3 (opciono)", "")
+    kladionica_kvote = []
+    realne_kvote = []
+    def try_parse_float(x):
+        try:
+            return float(x)
+        except:
+            return None
+
+    for k, r in [(k1, r1), (k2, r2), (k3, r3)]:
+        k_float = try_parse_float(k.strip())
+        r_float = try_parse_float(r.strip())
+        if k_float is not None and r_float is not None:
+            kladionica_kvote.append(k_float)
+            realne_kvote.append(r_float)
+        # ako treći nije unet ili nevalja, samo ga ignorisemo
+
+    if kladionica_kvote and realne_kvote and len(kladionica_kvote) == len(realne_kvote):
+        margine = margina(kladionica_kvote)
+        if margine:
+            st.write("**Margine (adjusted kvote):**", margine)
+        else:
+            st.warning("Greška u izračunavanju margine.")
+
+        st.write("**Kelly ulog (%):**")
+        for i, (k_kv, r_kv) in enumerate(zip(kladionica_kvote, realne_kvote)):
+            kelly = kelly_criterion(k_kv, r_kv)
+            st.write(f"Ishod {i+1}: {kelly} %")
+    else:
+        st.info("Unesi validne kvote u oba polja (barem za dva ishoda).")
+
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
+
 
 for file_path in csv_files:
     file_name = os.path.basename(file_path)  
@@ -107,12 +151,6 @@ for file_path in csv_files:
             kx = cols[2].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}", label_visibility="collapsed")
 
             ulog_str = st.text_input("Ukupni ulog", key=f"ulog_{file_name}")
-            def safe_float(x):
-                try:
-                    return float(x)
-                except:
-                    return None
-
             k1_f = safe_float(k1)
             kx_f = safe_float(kx)
             k2_f = safe_float(k2)
