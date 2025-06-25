@@ -59,8 +59,8 @@ if 1:
     st.sidebar.markdown("## Arbitražni kalkulator")
     
     k1 = st.sidebar.text_input("", key="k1")
-    kx = st.sidebar.text_input("", key="kx")
     k2 = st.sidebar.text_input("", key="k2")
+    kx = st.sidebar.text_input("", key="kx")
     ulog_str = st.sidebar.text_input("Ukupni ulog (€)", key="ulog")
     
     def safe_float(x):
