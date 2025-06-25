@@ -4,22 +4,27 @@ import re
 import os
 from glob import glob
 
-USERS = st.secrets["users"]  # Uzimamo korisnike iz secrets
+USERS = ['vinjak']
+
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
+    st.session_state["username"] = ""
 
 if not st.session_state["authenticated"]:
-    st.title("🔐 Login")
-    username = st.text_input("Korisničko ime")
-    password = st.text_input("Lozinka", type="password")
-    login_clicked = st.button("Prijavi se")
+    st.title("🔐 Login - samo korisničko ime")
 
-    if login_clicked and username in USERS and USERS[username] == password:
-        st.session_state["authenticated"] = True
-        st.success("Uspešno ste prijavljeni!")
-    elif login_clicked:
-        st.error("❌ Pogrešno korisničko ime ili lozinka")
+    username = st.text_input("Unesi korisničko ime")
+
+    if st.button("Prijavi se"):
+        if username in VALID_USERS:
+            st.session_state["authenticated"] = True
+            st.session_state["username"] = username
+            st.experimental_rerun()
+        else:
+            st.error("❌ Korisničko ime nije validno")
+
     st.stop()
+    
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("  📊 ARB UTAKMICE  ")
 
