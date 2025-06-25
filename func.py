@@ -1,4 +1,3 @@
-import pandas as pd
 
 def highlight_max_except_id(df):
 
