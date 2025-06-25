@@ -78,7 +78,7 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
 st.set_page_config(page_title="Kvote", layout="wide")
 st.markdown(
     """
-    <h1 style='text-align: center;'>📊 ARB UTAKMICE 📊</h1>
+    <h1 style='text-align: center;'> 📊 ARB UTAKMICE</h1>
     """, 
     unsafe_allow_html=True
 )
