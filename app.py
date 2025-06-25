@@ -105,8 +105,9 @@ with st.sidebar:
     with col1:
         btn_izracunaj = st.button("Margina")
     with col2:
-        btn_ponisti = st.button("Kelly")
-    if st.button("Marigna"):
+        btn_kelly = st.button("Kelly")
+    if btn_izracunaj:
+
       kvote = []
       for val in [k1, k2, k3]:
           try:
@@ -117,8 +118,7 @@ with st.sidebar:
       kvote = margina(kvote)
       st.markdown(f"**Kvote bez margine:** {kvote}")
 
-    if st.button("Kelly"):
-      
+    if  btn_kelly:
       procenat = kelly_criterion(float(k4), float(k5))
       st.markdown(f"** ULOG: ** {procenat}")
 
