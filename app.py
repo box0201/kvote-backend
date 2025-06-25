@@ -89,41 +89,46 @@ div[data-testid="stTextInput"] > div > div > input {
 
 with st.sidebar:
     st.title("📈 KELLY")
-    k1 = st.text_input("Kladionica kvota 1", "",  label_visibility="collapsed")
-    k2 = st.text_input("Kladionica kvota 2", "",  label_visibility="collapsed")
-    k3 = st.text_input("(opciono)", "")
-    r1 = st.text_input("Realna kvota 1", "",  label_visibility="collapsed")
-    r2 = st.text_input("Realna kvota 2", "",  label_visibility="collapsed")
-    r3 = st.text_input("(opciono)", "")
-    kladionica_kvote = []
-    realne_kvote = []
+
+    k1 = st.text_input("Kladionica kvota 1", "", label_visibility="collapsed")
+    k2 = st.text_input("Kladionica kvota 2", "", label_visibility="collapsed")
+    k3 = st.text_input("Kladionica kvota 3 (opciono)", "", label_visibility="collapsed")
+
+    r1 = st.text_input("Realna kvota 1", "", label_visibility="collapsed")
+    r2 = st.text_input("Realna kvota 2", "", label_visibility="collapsed")
+    r3 = st.text_input("Realna kvota 3 (opciono)", "", label_visibility="collapsed")
+
     def try_parse_float(x):
         try:
             return float(x)
         except:
             return None
 
-    for k, r in [(k1, r1), (k2, r2), (k3, r3)]:
-        k_float = try_parse_float(k.strip())
-        r_float = try_parse_float(r.strip())
-        if k_float is not None and r_float is not None:
-            kladionica_kvote.append(k_float)
-            realne_kvote.append(r_float)
-        # ako treći nije unet ili nevalja, samo ga ignorisemo
+    if st.button("Izračunaj"):
+        kladionica_kvote = []
+        realne_kvote = []
 
-    if kladionica_kvote and realne_kvote and len(kladionica_kvote) == len(realne_kvote):
-        margine = margina(kladionica_kvote)
-        if margine:
-            st.write("**Margine (adjusted kvote):**", margine)
+        for k, r in [(k1, r1), (k2, r2), (k3, r3)]:
+            k_float = try_parse_float(k.strip())
+            r_float = try_parse_float(r.strip())
+            if k_float is not None and r_float is not None:
+                kladionica_kvote.append(k_float)
+                realne_kvote.append(r_float)
+
+        if len(kladionica_kvote) >= 2 and len(kladionica_kvote) == len(realne_kvote):
+            margine = margina(kladionica_kvote)
+            if margine:
+                st.write("**Margine (adjusted kvote):**", margine)
+            else:
+                st.warning("Greška u izračunavanju margine.")
+
+            st.write("**Kelly ulog (%):**")
+            for i, (k_kv, r_kv) in enumerate(zip(kladionica_kvote, realne_kvote)):
+                kelly = kelly_criterion(k_kv, r_kv)
+                st.write(f"Ishod {i+1}: {kelly} %")
         else:
-            st.warning("Greška u izračunavanju margine.")
+            st.info("Unesi barem 2 para validnih kvota u oba polja.")
 
-        st.write("**Kelly ulog (%):**")
-        for i, (k_kv, r_kv) in enumerate(zip(kladionica_kvote, realne_kvote)):
-            kelly = kelly_criterion(k_kv, r_kv)
-            st.write(f"Ishod {i+1}: {kelly} %")
-    else:
-        st.info("Unesi validne kvote u oba polja (barem za dva ishoda).")
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
