@@ -25,36 +25,45 @@ def arbitrazni_kalkulator_3(kvote, ulog):
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("📊 ARB UTAKMICE")
 
-# Sidebar sa kontrolom prikaza kalkulatora
-show_calc = st.sidebar.checkbox("Prikaži arbitražni kalkulator")
+show_calc = st.sidebar.checkbox("Prikaži arbitražni kalkulator", value=True)
 
 if show_calc:
-    st.sidebar.header("Arbitražni kalkulator")
-    option = st.sidebar.selectbox("Izaberi broj ishoda", options=[2, 3])
-
-    if option == 2:
-        k1 = st.sidebar.number_input("Kvote za ishod 1", min_value=1.01, format="%.2f", step=0.01, key="k1")
-        k2 = st.sidebar.number_input("Kvote za ishod 2", min_value=1.01, format="%.2f", step=0.01, key="k2")
-        kvote = [k1, k2]
-    else:
-        k1 = st.sidebar.number_input("Kvote za ishod 1", min_value=1.01, format="%.2f", step=0.01, key="k1")
-        kx = st.sidebar.number_input("Kvote za ishod X", min_value=1.01, format="%.2f", step=0.01, key="kx")
-        k2 = st.sidebar.number_input("Kvote za ishod 2", min_value=1.01, format="%.2f", step=0.01, key="k2")
-        kvote = [k1, kx, k2]
-
-    ulog = st.sidebar.number_input("Ukupni ulog (€)", min_value=1.0, format="%.2f", step=0.5, key="ulog")
-
-    if st.sidebar.button("Izračunaj"):
-        if option == 2:
-            ulozi, profit = arbitrazni_kalkulator_2(kvote, ulog)
-            st.sidebar.markdown(f"**Ulozi po ishodima:** {ulozi[0]} €, {ulozi[1]} €")
+    st.sidebar.markdown("## Arbitražni kalkulator")
+    st.sidebar.markdown("Unesi kvote i ulog. Ako treća kvota nije unesena, računa se kao 2-way.")
+    
+    k1 = st.sidebar.text_input("Kvote za ishod 1", key="k1")
+    kx = st.sidebar.text_input("Kvote za ishod X (ostavi prazno za 2-way)", key="kx")
+    k2 = st.sidebar.text_input("Kvote za ishod 2", key="k2")
+    ulog_str = st.sidebar.text_input("Ukupni ulog (€)", key="ulog")
+    
+    # Pokušaj da parsiraš unose u float, ignoriši ako prazno ili nevalidno
+    def safe_float(x):
+        try:
+            return float(x)
+        except:
+            return None
+    
+    k1_f = safe_float(k1)
+    kx_f = safe_float(kx)
+    k2_f = safe_float(k2)
+    ulog = safe_float(ulog_str)
+    
+    # Provera minimalnih uslova da krenemo sa računom
+    if k1_f and k2_f and ulog and ulog > 0:
+        if kx_f:
+            # 3-way kalkulator
+            ulozi, profit = arbitrazni_kalkulator_3([k1_f, kx_f, k2_f], ulog)
+            st.sidebar.markdown(f"**Ulozi po ishodima:**\n- Ishod 1: {ulozi[0]} €\n- Ishod X: {ulozi[1]} €\n- Ishod 2: {ulozi[2]} €")
             st.sidebar.markdown(f"**Očekivani profit:** {profit} €")
         else:
-            ulozi, profit = arbitrazni_kalkulator_3(kvote, ulog)
-            st.sidebar.markdown(f"**Ulozi po ishodima:** {ulozi[0]} €, {ulozi[1]} €, {ulozi[2]} €")
+            # 2-way kalkulator bez ishoda X
+            ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
+            st.sidebar.markdown(f"**Ulozi po ishodima:**\n- Ishod 1: {ulozi[0]} €\n- Ishod 2: {ulozi[1]} €")
             st.sidebar.markdown(f"**Očekivani profit:** {profit} €")
+    else:
+        st.sidebar.info("Unesite ispravne kvote (najmanje ishod 1 i ishod 2) i ulog > 0.")
 
-# Glavni prikaz utakmica
+# Prikaz utakmica (tvoj postojeći kod)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
