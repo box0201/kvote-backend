@@ -94,6 +94,9 @@ with st.sidebar:
     k2 = st.text_input("kvota 2", "",)
     k3 = st.text_input("kvota 3 (opciono)", "", )
 
+    k3 = st.text_input("kvota 3 (opciono)", "", )
+    k3 = st.text_input("kvota 3 (opciono)", "", )
+
     def try_parse_float(x):
         try:
             return float(x)
@@ -108,7 +111,7 @@ with st.sidebar:
               kvote.append(f)
           except:
               pass
-      st.markdown(kvote)
+      st.write("Kvote bez marigne:", kvote)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
