@@ -92,11 +92,11 @@ with st.sidebar:
 
     k1 = st.text_input("Kladionica kvota 1", "", label_visibility="collapsed")
     k2 = st.text_input("Kladionica kvota 2", "", label_visibility="collapsed")
-    k3 = st.text_input("Kladionica kvota 3 (opciono)", "", label_visibility="collapsed")
+    k3 = st.text_input("Kladionica kvota 3 (opciono)", "", )
 
     r1 = st.text_input("Realna kvota 1", "", label_visibility="collapsed")
     r2 = st.text_input("Realna kvota 2", "", label_visibility="collapsed")
-    r3 = st.text_input("Realna kvota 3 (opciono)", "", label_visibility="collapsed")
+    r3 = st.text_input("Realna kvota 3 (opciono)", "",)
 
     def try_parse_float(x):
         try:
