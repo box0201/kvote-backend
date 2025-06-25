@@ -53,7 +53,7 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
     return najbolje_uloge, round(profit, 2)
 
 st.set_page_config(page_title="Kvote", layout="wide")
-st.title("📊 ARB UTAKMICE")
+st.title("📊ARB UTAKMICE")
 
 
 
@@ -77,8 +77,8 @@ for file_path in csv_files:
             cols = st.columns(3) 
 
             k1 = cols[0].text_input("", key=f"k1_{file_name}")
-            k2 = cols[2].text_input("", key=f"k2_{file_name}")
-            kx = cols[1].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
+            k2 = cols[1].text_input("", key=f"k2_{file_name}")
+            kx = cols[2].text_input("(ostavi prazno ako nema)", key=f"kx_{file_name}")
 
             ulog_str = st.text_input("Ukupni ulog", key=f"ulog_{file_name}")
             def safe_float(x):
