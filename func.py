@@ -16,3 +16,24 @@ def highlight_max_except_id(df):
     fmt = {col: "{:.2f}" for col in numeric_cols}
 
     return styler.format(fmt)
+
+
+def margina(odds):
+    if not odds or any(odd <= 0 for odd in odds):
+        return None
+    inverse_odds = [1 / odd for odd in odds]
+    margin = sum(inverse_odds)
+    adjusted_odds = [(1 / (inverse / margin)) for inverse in inverse_odds]
+    lista = []
+    for i in adjusted_odds:
+        lista.append(round(i, 2))
+    return lista
+
+def kelly_criterion(kladionica_kvota, realna_kvota):
+    verovatnoca = 1 / realna_kvota
+    ulog = ((kladionica_kvota * verovatnoca) - 1) / (kladionica_kvota - 1)
+    if ulog <= 0:
+        return 0
+
+    p = 1
+    return round(ulog * 100 * p, 2)
