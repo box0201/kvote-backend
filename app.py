@@ -16,7 +16,7 @@ if not st.session_state["authenticated"]:
     username = st.text_input("Unesi korisničko ime")
 
     if st.button("Prijavi se"):
-        if username in VALID_USERS:
+        if username in USERS:
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
             st.experimental_rerun()
