@@ -10,24 +10,6 @@ from datetime import timedelta
 
 USERS = st.secrets["valid_users"]
 
-if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
-    st.session_state["username"] = ""
-
-if not st.session_state["authenticated"]:
-    st.title("🔐 Login  ")
-
-    username = st.text_input("Unesi korisničko ime")
-
-    if st.button("Prijavi se"):
-        if username in USERS:
-            st.session_state["authenticated"] = True
-            st.session_state["username"] = username
-            st.success("Uspešno ste prijavljeni! Učitajte stranicu ponovo.")
-        else:
-            st.error("❌ Korisničko ime nije validno")
-
-    st.stop()
 
 def arbitrazni_kalkulator_2(kvote, ulog, tolerancija=1000):
     kvota_1, kvota_2 = kvote
