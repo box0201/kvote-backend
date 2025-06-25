@@ -120,7 +120,7 @@ with st.sidebar:
 
     if  btn_kelly:
       procenat = kelly_criterion(float(k4), float(k5))
-      st.markdown(f"** ULOG: ** {procenat}%")
+      st.markdown(f"** ULOG: **   {procenat}%")
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
