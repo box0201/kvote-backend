@@ -93,15 +93,20 @@ with st.sidebar:
     k1 = st.text_input("kvota 1", "",)
     k2 = st.text_input("kvota 2", "",)
     k3 = st.text_input("kvota 3 (opciono)", "", )
-
-
+    k4 = st.text_input("Kladionica kvota", "", )
+    k5 = st.text_input("Realna kvota", "", )
     def try_parse_float(x):
         try:
             return float(x)
         except:
             return None
+    col1, col2 = st.columns(2)  
 
-    if st.button("Izračunaj"):
+    with col1:
+        btn_izracunaj = st.button("Margina")
+    with col2:
+        btn_ponisti = st.button("Kelly")
+    if st.button("Marigna"):
       kvote = []
       for val in [k1, k2, k3]:
           try:
@@ -111,6 +116,11 @@ with st.sidebar:
               pass
       kvote = margina(kvote)
       st.markdown(f"**Kvote bez margine:** {kvote}")
+
+    if st.button("Kelly"):
+      
+      procenat = kelly_criterion(float(k4), float(k5))
+      st.markdown(f"** ULOG: ** {procenat}")
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
