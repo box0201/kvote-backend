@@ -72,38 +72,32 @@ for file_path in csv_files:
 
     with st.expander(title):
         st.dataframe(df_new)
-        
-        # --- Ovde ide arbitražni kalkulator za tu utakmicu ---
-        st.markdown("### Arbitražni kalkulator za ovu utakmicu")
-        
-        # Predpopuni kvote na osnovu df_new ako želiš, ili pusti prazno
-        k1 = st.text_input("Kvota za ishod 1", key=f"k1_{file_name}")
-        kx = st.text_input("Kvota za ishod X (ostavi prazno ako nema)", key=f"kx_{file_name}")
-        k2 = st.text_input("Kvota za ishod 2", key=f"k2_{file_name}")
-        ulog_str = st.text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
 
-        def safe_float(x):
-            try:
-                return float(x)
-            except:
-                return None
-        
-        k1_f = safe_float(k1)
-        kx_f = safe_float(kx)
-        k2_f = safe_float(k2)
-        ulog = safe_float(ulog_str)
-        
-        if k1_f and k2_f and ulog and ulog > 0:
-            if kx_f:
-                ulozi, profit = arbitrazni_kalkulator_3([k1_f, kx_f, k2_f], ulog)
-                st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, X: {ulozi[1]} €, 2: {ulozi[2]} €")
-                st.markdown(f"**Profit:** {profit} €")
+        with st.expander("Arbitražni kalkulator", expanded=False):
+            k1 = st.text_input("Kvota za ishod 1", key=f"k1_{file_name}")
+            kx = st.text_input("Kvota za ishod X (ostavi prazno ako nema)", key=f"kx_{file_name}")
+            k2 = st.text_input("Kvota za ishod 2", key=f"k2_{file_name}")
+            ulog_str = st.text_input("Ukupni ulog (€)", key=f"ulog_{file_name}")
+
+            def safe_float(x):
+                try:
+                    return float(x)
+                except:
+                    return None
+
+            k1_f = safe_float(k1)
+            kx_f = safe_float(kx)
+            k2_f = safe_float(k2)
+            ulog = safe_float(ulog_str)
+
+            if k1_f and k2_f and ulog and ulog > 0:
+                if kx_f:
+                    ulozi, profit = arbitrazni_kalkulator_3([k1_f, kx_f, k2_f], ulog)
+                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, X: {ulozi[1]} €, 2: {ulozi[2]} €")
+                    st.markdown(f"**Profit:** {profit} €")
+                else:
+                    ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
+                    st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, 2: {ulozi[1]} €")
+                    st.markdown(f"**Profit:** {profit} €")
             else:
-                ulozi, profit = arbitrazni_kalkulator_2([k1_f, k2_f], ulog)
-                st.markdown(f"**Ulozi:** 1: {ulozi[0]} €, 2: {ulozi[1]} €")
-                st.markdown(f"**Profit:** {profit} €")
-        else:
-            st.info("Unesite validne kvote i ulog.")
-
-
-
+                st.info("Unesite validne kvote i ulog.")
