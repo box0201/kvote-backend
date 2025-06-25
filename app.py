@@ -55,18 +55,24 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("📊ARB UTAKMICE")
 
-st.markdown(
-    """
-    <style>
-    div.row-widget.stTextInput > div {
-        min-width: 150px !important;
-        display: inline-block !important;
-        margin-right: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown("""
+<style>
+div.row-widget.stRadio > div {
+    flex-direction: row;
+}
+
+div[data-testid="stTextInput"] > div > div > input {
+    width: 100% !important;
+    min-width: 60px;
+}
+
+.css-1adrfps {
+    flex-wrap: nowrap !important;  /* spreči prelazak u novi red */
+    display: flex !important;
+    gap: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
 
 folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
