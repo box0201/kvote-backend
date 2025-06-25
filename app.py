@@ -4,7 +4,7 @@ import re
 import os
 from glob import glob
 
-USERS = ['vinjak']
+USERS = st.secrets["valid_users"]
 
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
