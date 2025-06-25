@@ -104,7 +104,7 @@ with st.sidebar:
         kvote = []
         kvote.append(float(k1), float(k2))
         try:
-          kvote.append(, float(k3))
+          kvote.append(float(k3))
         except:
           pass
         st.write(kvote)
