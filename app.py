@@ -6,6 +6,29 @@ from glob import glob
 from func import highlight_max_except_id
 from datetime import timedelta
 
+
+
+USERS = st.secrets["valid_users"]
+
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+    st.session_state["username"] = ""
+
+if not st.session_state["authenticated"]:
+    st.title("🔐 Login - samo korisničko ime")
+
+    username = st.text_input("Unesi korisničko ime")
+
+    if st.button("Prijavi se"):
+        if username in USERS:
+            st.session_state["authenticated"] = True
+            st.session_state["username"] = username
+            st.success("Uspešno ste prijavljeni! Učitajte stranicu ponovo.")
+        else:
+            st.error("❌ Korisničko ime nije validno")
+
+    st.stop()
+
 def arbitrazni_kalkulator_2(kvote, ulog, tolerancija=1000):
     kvota_1, kvota_2 = kvote
     najmanja_razlika = float('inf') 
@@ -55,11 +78,11 @@ def arbitrazni_kalkulator_3(kvote, ulog, tolerancija=1000):
 st.set_page_config(page_title="Kvote", layout="wide")
 st.markdown(
     """
-    <h1 style='text-align: center;'>📊ARB UTAKMICE</h1>
+    <h1 style='text-align: center;'>📊 ARB UTAKMICE 📊</h1>
     """, 
     unsafe_allow_html=True
 )
-st.title("📊ARB UTAKMICE")
+
 
 st.markdown("""
 <style>
