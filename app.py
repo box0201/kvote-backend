@@ -15,7 +15,7 @@ if "authenticated" not in st.session_state:
     st.session_state["username"] = ""
 
 if not st.session_state["authenticated"]:
-    st.title("🔐 Login - samo korisničko ime")
+    st.title("🔐 Login  ")
 
     username = st.text_input("Unesi korisničko ime")
 
