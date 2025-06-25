@@ -21,7 +21,6 @@ if not st.session_state["authenticated"]:
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
             st.success("Uspešno ste prijavljeni! Učitajte stranicu ponovo.")
-            # Nemoj koristiti st.experimental_rerun()
         else:
             st.error("❌ Korisničko ime nije validno")
 
@@ -30,11 +29,11 @@ if not st.session_state["authenticated"]:
 st.set_page_config(page_title="Kvote", layout="wide")
 st.title("  📊 ARB UTAKMICE  ")
 
-folder_path = "csv"  # Tvoj folder sa CSV fajlovima
+folder_path = "csv"  
 csv_files = glob(os.path.join(folder_path, "*.csv"))
 
 for file_path in csv_files:
-    file_name = os.path.basename(file_path)  # npr. 'utakmica_123_47.csv'
+    file_name = os.path.basename(file_path)  
     match = re.search(r'_(\d+(?:\.\d+)?)\.csv$', file_name)
     procenat = float(match.group(1)) if match else None
     df = pd.read_csv(file_path)
@@ -44,5 +43,5 @@ for file_path in csv_files:
     
     title = f"⚽ {df.iloc[0]['domaci']} vs {df.iloc[0]['gosti']}  —  🕒 {df.iloc[0]['vreme']}  —  {procenat}%"
     with st.expander(title):
-      st.dataframe(df_new)  # zaokruženi DataFrame, bez stilova
+      st.dataframe(df_new.round(2))  
 
