@@ -19,7 +19,8 @@ if not st.session_state["authenticated"]:
         if username in USERS:
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
-            st.experimental_rerun()
+            st.success("Uspešno ste prijavljeni! Učitajte stranicu ponovo.")
+            # Nemoj koristiti st.experimental_rerun()
         else:
             st.error("❌ Korisničko ime nije validno")
 
